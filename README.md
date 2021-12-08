@@ -1,2 +1,3 @@
-# swift-owasp
-OWASP Top 10 - Static analyser
+# swiftBee
+
+A description of this package.
