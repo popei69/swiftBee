@@ -10,14 +10,22 @@ import Foundation
 struct Rule {
     let regex: String
     
-    /// Common Weakness Enumeration
-    let cwe: String
-    let averageCSVSS: Float
+    let base: RuleBase
     let description: String
-    let recommendation: String 
-}
 
-extension Rule: Codable { }
+    /// Common Weakness Enumeration
+    var cwe: String {
+        return base.key
+    }
+    
+    var averageCSVSS: Float {
+        return base.CSVSS
+    }
+    
+    var recommendation: String {
+        return base.recommendation
+    } 
+}
 
 struct IssueInfo {
     let description: String
