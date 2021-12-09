@@ -31,7 +31,7 @@ public final class CommandLineTool {
             let file = try Folder.current.file(named: fileName)
             
             let matcher = RuleMatcher()
-            matcher.analyze(file)
+            try matcher.analyze(file)
         } catch { 
             print(error)
             throw Error.failedToCreateFile
