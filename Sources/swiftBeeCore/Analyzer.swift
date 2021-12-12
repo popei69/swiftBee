@@ -9,7 +9,7 @@ import Foundation
 import Files
 
 
-final class RuleMatcher {
+final class Analyzer {
     
     let providers: [RuleProviderProtocol]
     
@@ -20,6 +20,8 @@ final class RuleMatcher {
     func analyze(_ file: File) throws {
         
         let content = try file.readAsString()
+        
+        print("Analyzing : " + file.path)
         
         let issues = providers
             .map { $0.rules }
@@ -32,7 +34,7 @@ final class RuleMatcher {
         for issue in issues {
             let log = """
             -------------------------------------
-            Issue found
+            Issue found ⚠️
             ID: \(issue.vulnerabilityId)
             CSVV: \(issue.info.CSVSS)
             CWE: \(issue.info.cwe)

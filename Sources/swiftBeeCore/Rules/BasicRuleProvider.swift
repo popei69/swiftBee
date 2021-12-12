@@ -7,14 +7,6 @@
 
 import Foundation
 
-protocol RuleProviderProtocol { 
-    var rules: [Rule] { get }
-}
-
-final class iOSRuleProvider {
-    
-}
-
 final class BasicRuleProvider: RuleProviderProtocol { 
     lazy var rules: [Rule] = BasicRuleProvider.makeBasicRules()
     
@@ -170,35 +162,5 @@ final class BasicRuleProvider: RuleProviderProtocol {
                  base: .cwe312, 
                  description: RuleBase.cwe312.description),
         ]
-    }
-}
-
-enum RuleBase: String {
-    case cwe312 = "CWE-312"
-    
-    var key: String {
-        return rawValue
-    }
-    
-    var CSVSS: Float {
-        switch self {
-        case .cwe312:
-            return 7.4
-        
-        }
-    }
-    
-    var description: String {
-        switch self {
-        case .cwe312:
-            return "File contains sensitive information written directly, such as usernames, passwords, keys, etc."
-        }
-    }
-    
-    var recommendation: String {
-        switch self {
-        case .cwe312:
-            return "Credentials must not be stored in the git code or repository, an attacker could decompile the application and obtain the credential. There are ‘Secrets Management’ solutions that can be used to store secrets or use Pipeline resources."
-        }
     }
 }

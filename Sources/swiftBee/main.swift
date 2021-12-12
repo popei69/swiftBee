@@ -1,7 +1,7 @@
 import swiftBeeCore
 
 
-let tool = CommandLineTool(arguments: ["./", "search_cities_en.txt"])
+let tool = CommandLineTool(arguments: ["./", "~/development/swift/JapanExpress"])
 
 do {
     try tool.run()

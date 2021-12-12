@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Core.swift
 //  
 //
 //  Created by Benoit PASQUIER on 08/12/2021.
@@ -9,7 +9,8 @@ import Foundation
 import Files
 
 enum Error: Swift.Error {
-    case missingfileName
+    case missingFolderPath
+    case unknownFolderPath
     case failedToCreateFile
 }
 
@@ -22,20 +23,37 @@ public final class CommandLineTool {
 
     public func run() throws {
         guard arguments.count > 1 else {
-            throw Error.missingfileName
+            throw Error.missingFolderPath
         }
         
-        let fileName = arguments[1]
-        
+        let path = arguments[1]
         do {
-            let file = try Folder.current.file(named: fileName)
+            let folder = try Folder(path: path) 
+            scanFolder(folder)
+                .map(analyseFiles)
             
-            let matcher = RuleMatcher()
-            try matcher.analyze(file)
-        } catch { 
-            print(error)
-            throw Error.failedToCreateFile
+        } catch {
+            throw Error.unknownFolderPath
+        }
+        
+    }
+    
+    func scanFolder(_ folder: Folder) -> [File]? {
+        let scanner = Scanner()
+        return scanner.scan(folder)
+    }
+    
+    func analyseFiles(_ files: [File]) {
+        let analyser = Analyzer()
+        
+        for file in files {
+            do {
+                try analyser.analyze(file)
+            } catch {
+                print(error)
+            }
         }
     }
+
 }
 
