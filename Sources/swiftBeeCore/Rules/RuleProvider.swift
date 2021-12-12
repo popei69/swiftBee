@@ -7,4 +7,5 @@
 
 protocol RuleProviderProtocol { 
     var rules: [Rule] { get }
+    var supportedExtensions: [String] { get }
 }

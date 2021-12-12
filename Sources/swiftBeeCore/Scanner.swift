@@ -14,7 +14,7 @@ final class Scanner {
     func scan(_ folder: Folder) -> [File] {
         
         var files = folder.files
-            .filter { !exclusionFiles.contains($0.name) && $0.extension == "swift" }
+            .filter { !exclusionFiles.contains($0.name) }
         
         for subfolder in folder.subfolders {
             files.append(contentsOf: scan(subfolder))

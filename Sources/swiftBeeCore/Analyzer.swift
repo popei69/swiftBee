@@ -13,7 +13,7 @@ final class Analyzer {
     
     let providers: [RuleProviderProtocol]
     
-    init(providers: [RuleProviderProtocol] = [BasicRuleProvider()]) {
+    init(providers: [RuleProviderProtocol] = [BasicRuleProvider(), iOSRuleProvider()]) {
         self.providers = providers
     }
     
@@ -44,7 +44,7 @@ final class Analyzer {
             """
             print(log)
         }
-    } 
+    }
     
     func match(_ content: String, rule: Rule) -> [Issue]? {
         let regex = try? NSRegularExpression(pattern: rule.regex)

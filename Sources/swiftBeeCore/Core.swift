@@ -22,6 +22,7 @@ public final class CommandLineTool {
     }
 
     public func run() throws {
+        let start = Date()
         guard arguments.count > 1 else {
             throw Error.missingFolderPath
         }
@@ -36,6 +37,8 @@ public final class CommandLineTool {
             throw Error.unknownFolderPath
         }
         
+        let interval = Date().timeIntervalSince(start)
+        print("⏲ - \(interval)")
     }
     
     func scanFolder(_ folder: Folder) -> [File]? {

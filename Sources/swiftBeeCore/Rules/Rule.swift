@@ -9,21 +9,21 @@ import Foundation
 
 struct Rule {
     let regex: String
-    
-    let base: RuleBase
-    let description: String
 
     /// Common Weakness Enumeration
-    var cwe: String {
-        return base.key
-    }
-    
-    var averageCSVSS: Float {
-        return base.CSVSS
-    }
-    
-    var recommendation: String {
-        return base.recommendation
+    let cwe: String
+    let averageCSVSS: Float
+    let description: String
+    let recommendation: String
+}
+
+extension Rule {
+    init(regex: String, base: RuleBase, description: String) {
+        self.regex = regex
+        self.cwe = base.key
+        self.averageCSVSS = base.CSVSS
+        self.recommendation = base.recommendation
+        self.description = description
     } 
 }
 
