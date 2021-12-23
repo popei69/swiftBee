@@ -27,7 +27,7 @@ final class Analyzer {
             .map { $0.rules }
             .flatMap { $0 }
             .compactMap { rule in 
-                return self.match(content, rule: rule)
+                return self.evaluateExactMatch(content, rule: rule)
             }
             .flatMap { $0 }
         
@@ -46,8 +46,12 @@ final class Analyzer {
         }
     }
     
-    func match(_ content: String, rule: Rule) -> [Issue]? {
-        let regex = try? NSRegularExpression(pattern: rule.regex)
+    func evaluateExactMatch(_ content: String, rule: Rule) -> [Issue]? {
+        guard let exactMatch = rule.regexExactMatch, !exactMatch.isEmpty else {
+            return nil
+        }
+        
+        let regex = try? NSRegularExpression(pattern: exactMatch)
         let range = NSRange(location: 0, length: content.utf16.count)
         
         guard let result = regex?.matches(in: content, options: [], range: range) else {
@@ -59,7 +63,7 @@ final class Analyzer {
         let issues = result
             .compactMap { Range($0.range, in: content) }
             .compactMap { String(content[$0]) }
-            .map { sample in 
+            .map { sample in
                 return Issue(vulnerabilityId: UUID(), info: info, line: nil, column: nil, sample: sample, content: nil)
             }
         
