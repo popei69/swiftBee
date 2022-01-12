@@ -27,7 +27,7 @@ final class Analyzer {
             .map { $0.rules }
             .flatMap { $0 }
             .compactMap { rule in 
-                return self.evaluateExactMatch(content, rule: rule)
+                return self.evaluate(content, rule: rule)
             }
             .flatMap { $0 }
         
@@ -46,28 +46,174 @@ final class Analyzer {
         }
     }
     
+    func evaluate(_ content: String, rule: Rule) -> [Issue]? {
+        if rule.hasAnd {
+            return evaluateAndMatch(content, rule: rule)
+        }
+        
+        if rule.hasOr {
+            return evaluateOrMatch(content, rule: rule)
+        }
+            
+        if rule.isMatch {
+            return evaluateExactMatch(content, rule: rule)
+        }
+            
+        return []
+    }
+    
     func evaluateExactMatch(_ content: String, rule: Rule) -> [Issue]? {
         guard let exactMatch = rule.regexExactMatch, !exactMatch.isEmpty else {
             return nil
         }
         
-        let regex = try? NSRegularExpression(pattern: exactMatch)
-        let range = NSRange(location: 0, length: content.utf16.count)
+        var result: [Issue] = []
+        let issues = evaluateRegex(exactMatch, into: content, from: rule) ?? []
         
-        guard let result = regex?.matches(in: content, options: [], range: range) else {
+        if rule.hasNotOr || rule.hasNotAnd {
+            for issue in issues {
+                guard let issueContent = issue.content else {
+                    continue
+                }
+                
+                if evaluateAllNot(issueContent, rule: rule) {
+                    result.append(issue)
+                }
+            }
+        } else {
+            result.append(contentsOf: issues)
+        }
+        
+        return result
+    }
+    
+    /// Evaluate all the AND regex at once
+    /// - Parameters:
+    ///   - content: Content to evaluate
+    ///   - rule: Rule
+    /// - Returns: List of detected issues
+    func evaluateAndMatch(_ content: String, rule: Rule) -> [Issue]? {
+        guard let regexAnd = rule.regexAnd else {
+            return nil
+        }
+        
+        var result: [Issue] = []
+        for regex in regexAnd {
+            
+            let issues = evaluateRegex(regex, into: content, from: rule) ?? []
+            
+            // if no match, we stop here for AND
+            if issues.isEmpty {
+                return nil
+            }
+            
+            if rule.hasNotAnd || rule.hasNotOr {
+                
+                for issue in issues {
+                    guard let issueContent = issue.content else {
+                        continue
+                    }
+                    
+                    if evaluateAllNot(issueContent, rule: rule) {
+                        result.append(issue)
+                    }
+                }
+            }
+            
+            result.append(contentsOf: issues)
+        }
+        
+        return result
+    }
+    
+    func evaluateOrMatch(_ content: String, rule: Rule) -> [Issue]? {
+        guard let regexOr = rule.regexOr else {
+            return nil
+        }
+        
+        var result: [Issue] = []
+        for regex in regexOr {
+            let issues = evaluateRegex(regex, into: content, from: rule) ?? []
+            // TODO handle NOT OR / NOT AND
+            
+            result.append(contentsOf: issues)
+        }
+        
+        return result
+    }
+    
+    func evaluateAllNot(_ content: String, rule: Rule) -> Bool {
+        if rule.hasNotAnd {
+            return evaluateNotAndMatch(content, rule: rule)
+        }
+        
+        if rule.hasNotOr {
+            return evaluateNotOrMatch(content, rule: rule)
+        }
+        
+        return true
+    }
+    
+    func evaluateNotAndMatch(_ content: String, rule: Rule) -> Bool {
+        guard let regexNotAnd = rule.regexNotAnd else {
+            return true
+        }
+        
+        var found = 0
+        for regex in regexNotAnd {
+            let matches = findAll(regex, into: content) ?? []
+            
+            if !matches.isEmpty {
+                found += 1
+            }
+        }
+        
+        return regexNotAnd.count == found
+    }
+    
+    func evaluateNotOrMatch(_ content: String, rule: Rule) -> Bool {
+        guard let regexNotOr = rule.regexNotOr else {
+            return true
+        }
+        
+        for regex in regexNotOr {
+            if containsOne(regex, into: content) {
+                return false
+            }
+        }
+        
+        return true
+    }
+}
+
+extension Analyzer {
+    
+    private func evaluateRegex(_ regexExp: String, into content: String, from rule: Rule) -> [Issue]? {
+        guard let result = findAll(regexExp, into: content) else {
             return nil
         }
         
         let info = IssueInfo(rule: rule)
         
         let issues = result
-            .compactMap { Range($0.range, in: content) }
-            .compactMap { String(content[$0]) }
             .map { sample in
                 return Issue(vulnerabilityId: UUID(), info: info, line: nil, column: nil, sample: sample, content: nil)
             }
         
         return issues
     }
+    
+    private func findAll(_ regexExp: String, into content: String) -> [String]? {
+        let regex = try? NSRegularExpression(pattern: regexExp)
+        let range = NSRange(location: 0, length: content.utf16.count)
+        return regex?.matches(in: content, options: [], range: range)
+            .compactMap { Range($0.range, in: content) }
+            .compactMap { String(content[$0]) }
+    }
+    
+    private func containsOne(_ regexExp: String, into content: String) -> Bool {
+        let regex = try? NSRegularExpression(pattern: regexExp)
+        let range = NSRange(location: 0, length: content.utf16.count)
+        return regex?.matches(in: content, options: [], range: range).isEmpty ?? true
+    }
 }
-
