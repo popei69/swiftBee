@@ -17,13 +17,25 @@ final class Analyzer {
         self.providers = providers
     }
     
-    func analyze(_ file: File) throws {
+    func providerHandlers(for file: File) -> [RuleProviderProtocol] {
+        guard let fileExtension = file.extension else {
+            return []
+        }
         
-        let content = try file.readAsString()
+        return providers
+            .filter { $0.supportedExtensions.contains(fileExtension) }
+    }
+    
+    func analyze(_ file: File) throws {
+        let providerHandlers = providerHandlers(for: file)
+        guard !providerHandlers.isEmpty else {
+            return
+        }
         
         print("Analyzing : " + file.path)
+        let content = try file.readAsString()
         
-        let issues = providers
+        let issues = providerHandlers
             .map { $0.rules }
             .flatMap { $0 }
             .compactMap { rule in 

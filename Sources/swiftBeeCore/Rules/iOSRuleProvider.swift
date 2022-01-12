@@ -48,21 +48,21 @@ final class iOSRuleProvider: RuleProviderProtocol {
                  cwe: "CWE-749",
                  averageCSVSS: 5,
                  description: "WebView Load Request.",
-                 recommendation: "")
+                 recommendation: ""),
             
             Rule(regexAnd: ["NSHTTPCookieStorage", "sharedHTTPCookieStorage"],
                  regexNotAnd: ["NSHTTPCookieStorage"],
                  cwe: "CWE-539",
                  averageCSVSS: 5.3,
                  description: "Cookie Storage.",
-                 recommendation: "")
+                 recommendation: ""),
             
             Rule(regexAnd: ["CommonDigest.h", "CC_MD5"],
                  regexNotAnd: ["CommonDigest.h"],
                  cwe: "CWE-327",
                  averageCSVSS: 7.4,
                  description: "MD5 is a weak hash, which can generate repeated hashes.",
-                 recommendation: "When it is necessary to store or transmit sensitive data, give preference to modern encryption algorithms and check frequently that the algorithm used has not become obsolete.")
+                 recommendation: "When it is necessary to store or transmit sensitive data, give preference to modern encryption algorithms and check frequently that the algorithm used has not become obsolete."),
             
             Rule(regexExactMatch: "UIPasteboard",
                  cwe: "CWE-200",
@@ -75,26 +75,26 @@ final class iOSRuleProvider: RuleProviderProtocol {
                  cwe: "CWE-95",
                  averageCSVSS: 8.8,
                  description: "User input not sanitized in 'loadHTMLString' can result in an injection of JavaScript in the context of your application, allowing access to private data.",
-                 recommendation: "")
+                 recommendation: ""),
             
             Rule(regexOr: ["(?i)SHA1\\(", "CC_SHA1\\("],
                  cwe: "CWE-327",
                  averageCSVSS: 5.9,
                  description: "SHA1 is a weak hash, which can generate repeated hashes.",
-                 recommendation: "When it is necessary to store or transmit sensitive data, give preference to modern encryption algorithms and check frequently that the algorithm used has not become obsolete.")
+                 recommendation: "When it is necessary to store or transmit sensitive data, give preference to modern encryption algorithms and check frequently that the algorithm used has not become obsolete."),
             
             Rule(regexOr: ["kCCOptionECBMode", "kCCAlgorithmAES"],
                  cwe: "CWE-327",
                  averageCSVSS: 5.9,
                  description: "The application uses ECB mode in the encryption algorithm. It is known that the ECB mode is weak, as it results in the same ciphertext for identical blocks of plain text.",
-                 recommendation: "When it is necessary to store or transmit sensitive data, give preference to modern encryption algorithms and check frequently that the algorithm used has not become obsolete.")
+                 recommendation: "When it is necessary to store or transmit sensitive data, give preference to modern encryption algorithms and check frequently that the algorithm used has not become obsolete."),
             
-            Rule(regexAnd: ["mach/mach_init.h", "MACH_PORT_VALID|mach_task_self\\(\)"],
+            Rule(regexAnd: ["mach/mach_init.h", "MACH_PORT_VALID|mach_task_self\\(\\)"],
                  regexNotAnd: ["mach/mach_init.h"],
                  cwe: "CWE-215",
                  averageCSVSS: 5,
                  description: "The application has anti-debugger using Mach Exception Ports.",
-                 recommendation: "")
+                 recommendation: ""),
             
             
             Rule(regexOr: [
@@ -105,21 +105,21 @@ final class iOSRuleProvider: RuleProviderProtocol {
                  cwe: "CWE-327",
                  averageCSVSS: 5.9,
                  description: "The app is using weak encryption APIs and / or that are known to have hash conflicts.",
-                 recommendation: "")
+                 recommendation: ""),
             
             
             Rule(regexOr: ["(?i)MD2\\(", "CC_MD2\\("],
                  cwe: "CWE-327",
                  averageCSVSS: 5.9,
                  description: "MD2 is a weak hash known to have hash collisions.",
-                 recommendation: "")
+                 recommendation: ""),
             
             
             Rule(regexOr: ["(?i)MD6\\(", "CC_MD6\\("],
                  cwe: "CWE-327",
                  averageCSVSS: 5.9,
                  description: "MD6 is a weak hash known to have hash collisions.",
-                 recommendation: "")
+                 recommendation: ""),
             
             Rule(regexOr: [
                     "/Applications/Cydia.app",
@@ -181,7 +181,7 @@ final class iOSRuleProvider: RuleProviderProtocol {
                  recommendation: ""),
             
             Rule(regexAnd: ["NSLog\\(|NSAssert\\(|fprintf\\(|fprintf\\(|Logging\\("],
-                 regexNotAnd: ["\*"],
+                 regexNotAnd: ["\\*"],
                  cwe: "CWE-532",
                  averageCSVSS: 7.5,
                  description: "The binary can use the NSLog function for logging. Confidential information should never be recorded.",
@@ -193,14 +193,14 @@ final class iOSRuleProvider: RuleProviderProtocol {
                  description: "The file has no special protections associated with it.",
                  recommendation: ""),
             
-            Rule(regexAnd: ["\.TLSMinimumSupportedProtocolVersion", "tls_protocol_version_t\.TLSv10|tls_protocol_version_t\.TLSv11"],
+            Rule(regexAnd: ["\\.TLSMinimumSupportedProtocolVersion", "tls_protocol_version_t\\.TLSv10|tls_protocol_version_t\\.TLSv11"],
                  cwe: "",
                  averageCSVSS: 0,
                  description: "TLS 1.3 should be used. Detected old version.",
                  recommendation: ""),
             
             // TODO check
-            Rule(regexAnd: ["\.TLSMinimumSupportedProtocolVersion", "tls_protocol_version_t\.TLSv12"],
+            Rule(regexAnd: ["\\.TLSMinimumSupportedProtocolVersion", "tls_protocol_version_t\\.TLSv12"],
                  cwe: "CWE-757",
                  averageCSVSS: 7.5,
                  description: "TLS 1.3 should be used. Detected old version - TLS 1.2.",
