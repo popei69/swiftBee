@@ -43,11 +43,83 @@ final class iOSRuleProvider: RuleProviderProtocol {
                  description: "Local File I/O Operations",
                  recommendation: ""),
             
+            Rule(regexAnd: ["loadRequest", "WebView"],
+                 regexNotAnd: ["WebView"],
+                 cwe: "CWE-749",
+                 averageCSVSS: 5,
+                 description: "WebView Load Request.",
+                 recommendation: "")
+            
+            Rule(regexAnd: ["NSHTTPCookieStorage", "sharedHTTPCookieStorage"],
+                 regexNotAnd: ["NSHTTPCookieStorage"],
+                 cwe: "CWE-539",
+                 averageCSVSS: 5.3,
+                 description: "Cookie Storage.",
+                 recommendation: "")
+            
+            Rule(regexAnd: ["CommonDigest.h", "CC_MD5"],
+                 regexNotAnd: ["CommonDigest.h"],
+                 cwe: "CWE-327",
+                 averageCSVSS: 7.4,
+                 description: "MD5 is a weak hash, which can generate repeated hashes.",
+                 recommendation: "When it is necessary to store or transmit sensitive data, give preference to modern encryption algorithms and check frequently that the algorithm used has not become obsolete.")
+            
             Rule(regexExactMatch: "UIPasteboard",
                  cwe: "CWE-200",
                  averageCSVSS: 9.8,
                  description: "The application copies data to the UIPasteboard. Confidential data must not be copied to the UIPasteboard, as other applications can access it.",
                  recommendation: ""),
+            
+            Rule(regexAnd: ["loadHTMLString\\(", "WKWebView"],
+                 regexNotAnd: ["WKWebView"],
+                 cwe: "CWE-95",
+                 averageCSVSS: 8.8,
+                 description: "User input not sanitized in 'loadHTMLString' can result in an injection of JavaScript in the context of your application, allowing access to private data.",
+                 recommendation: "")
+            
+            Rule(regexOr: ["(?i)SHA1\\(", "CC_SHA1\\("],
+                 cwe: "CWE-327",
+                 averageCSVSS: 5.9,
+                 description: "SHA1 is a weak hash, which can generate repeated hashes.",
+                 recommendation: "When it is necessary to store or transmit sensitive data, give preference to modern encryption algorithms and check frequently that the algorithm used has not become obsolete.")
+            
+            Rule(regexOr: ["kCCOptionECBMode", "kCCAlgorithmAES"],
+                 cwe: "CWE-327",
+                 averageCSVSS: 5.9,
+                 description: "The application uses ECB mode in the encryption algorithm. It is known that the ECB mode is weak, as it results in the same ciphertext for identical blocks of plain text.",
+                 recommendation: "When it is necessary to store or transmit sensitive data, give preference to modern encryption algorithms and check frequently that the algorithm used has not become obsolete.")
+            
+            Rule(regexAnd: ["mach/mach_init.h", "MACH_PORT_VALID|mach_task_self\\(\)"],
+                 regexNotAnd: ["mach/mach_init.h"],
+                 cwe: "CWE-215",
+                 averageCSVSS: 5,
+                 description: "The application has anti-debugger using Mach Exception Ports.",
+                 recommendation: "")
+            
+            
+            Rule(regexOr: [
+                    "CC_MD4_Init|CC_MD4_Update|CC_MD4_Final|CC_MD4|MD4_Ini",
+                    "MD4_Update|MD4_Final|CC_MD5_Init|CC_MD5_Update|CC_MD5_Final|CC_MD5|MD5_Init",
+                    "MD5_Update|MD5_Final|MD5Init|MD5Update|MD5Final"
+                ],
+                 cwe: "CWE-327",
+                 averageCSVSS: 5.9,
+                 description: "The app is using weak encryption APIs and / or that are known to have hash conflicts.",
+                 recommendation: "")
+            
+            
+            Rule(regexOr: ["(?i)MD2\\(", "CC_MD2\\("],
+                 cwe: "CWE-327",
+                 averageCSVSS: 5.9,
+                 description: "MD2 is a weak hash known to have hash collisions.",
+                 recommendation: "")
+            
+            
+            Rule(regexOr: ["(?i)MD6\\(", "CC_MD6\\("],
+                 cwe: "CWE-327",
+                 averageCSVSS: 5.9,
+                 description: "MD6 is a weak hash known to have hash collisions.",
+                 recommendation: "")
             
             Rule(regexOr: [
                     "/Applications/Cydia.app",
