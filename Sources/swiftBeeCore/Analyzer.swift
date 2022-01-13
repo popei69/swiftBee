@@ -38,8 +38,13 @@ final class Analyzer {
         let issues = providerHandlers
             .map { $0.rules }
             .flatMap { $0 }
-            .compactMap { rule in 
-                return self.evaluate(content, rule: rule)
+            .compactMap { rule -> [Issue]? in
+                let issues = self.evaluate(content, rule: rule)
+                
+                if issues?.isEmpty == false {
+                    print("Found issue for rule")
+                }
+                return issues
             }
             .flatMap { $0 }
         
@@ -201,7 +206,8 @@ final class Analyzer {
 extension Analyzer {
     
     private func evaluateRegex(_ regexExp: String, into content: String, from rule: Rule) -> [Issue]? {
-        guard let result = findAll(regexExp, into: content) else {
+        guard let result = findAll(regexExp, into: content),
+                !result.isEmpty else {
             return nil
         }
         
@@ -209,7 +215,7 @@ extension Analyzer {
         
         let issues = result
             .map { sample in
-                return Issue(vulnerabilityId: UUID(), info: info, line: nil, column: nil, sample: sample, content: nil)
+                return Issue(vulnerabilityId: UUID(), info: info, line: nil, column: nil, sample: sample, content: sample)
             }
         
         return issues

@@ -54,12 +54,18 @@ struct Rule {
 
 extension Rule {
     
-    init(regexExactMatch: String, base: RuleBase, description: String) {
+    init(regexExactMatch: String,
+         regexAnd: [String]? = nil,
+         regexOr: [String]? = nil,
+         regexNotAnd: [String]? = nil,
+         regexNotOr: [String]? = nil,
+         base: RuleBase,
+         description: String) {
         self.init(regexExactMatch: regexExactMatch,
-                  regexAnd: nil,
-                  regexOr: nil,
-                  regexNotAnd: nil,
-                  regexNotOr: nil,
+                  regexAnd: regexAnd,
+                  regexOr: regexOr,
+                  regexNotAnd: regexNotAnd,
+                  regexNotOr: regexNotOr,
                   cwe: base.key,
                   averageCSVSS: base.CSVSS,
                   description: description,

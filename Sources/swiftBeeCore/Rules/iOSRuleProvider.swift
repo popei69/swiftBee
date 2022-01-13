@@ -8,7 +8,7 @@
 import Foundation
 
 final class iOSRuleProvider: RuleProviderProtocol { 
-    lazy var rules: [Rule] = BasicRuleProvider.makeBasicRules()
+    lazy var rules: [Rule] = iOSRuleProvider.makeBasicRules()
     var supportedExtensions: [String] = ["swift", "obj", "h", "m"]
     
     static func makeBasicRules() -> [Rule] {

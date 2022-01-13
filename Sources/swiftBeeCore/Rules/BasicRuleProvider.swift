@@ -30,7 +30,7 @@ final class BasicRuleProvider: RuleProviderProtocol {
                  description: RuleBase.cwe312.description),
             
             Rule(regexExactMatch: "(chave\\s*=\\s*['|\"]\\w+['|\"])|(\\w*[tT]oken\\s*=\\s*['|\"]\\w+['|\"])|(\\w*[aA][uU][tT][hH]\\w*\\s*=\\s*['|\"]\\w+['|\"])|(username\\s*=\\s*['|\"]\\w+['|\"])|(secret\\s*=\\s*['|\"]\\w+['|\"])|(chave\\s*=\\s*['|\"]\\w+['|\"])",
-                 // NotOr:         []*regexp.Regexp{regexp.MustCompile(`(?mi)public.*[tT]oken`),
+                 regexNotOr: ["(?mi)public.*[tT]oken", "(?mi)public.*[kK]ey"],
                  base: .cwe312, 
                  description: RuleBase.cwe312.description),
             
