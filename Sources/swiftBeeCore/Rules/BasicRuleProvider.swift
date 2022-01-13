@@ -9,7 +9,7 @@ import Foundation
 
 final class BasicRuleProvider: RuleProviderProtocol { 
     lazy var rules: [Rule] = BasicRuleProvider.makeBasicRules()
-    let supportedExtensions: [String] = ["swift", "obj", "h", "m"]
+    let supportedExtensions: [String] = []
     
     static func makeBasicRules() -> [Rule] {
         return [

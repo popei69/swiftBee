@@ -23,7 +23,7 @@ final class Analyzer {
         }
         
         return providers
-            .filter { $0.supportedExtensions.contains(fileExtension) }
+            .filter { $0.supportedExtensions.isEmpty || $0.supportedExtensions.contains(fileExtension) }
     }
     
     func analyze(_ file: File) throws {
@@ -38,13 +38,8 @@ final class Analyzer {
         let issues = providerHandlers
             .map { $0.rules }
             .flatMap { $0 }
-            .compactMap { rule -> [Issue]? in
-                let issues = self.evaluate(content, rule: rule)
-                
-                if issues?.isEmpty == false {
-                    print("Found issue for rule")
-                }
-                return issues
+            .compactMap { rule in
+                self.evaluate(content, rule: rule)
             }
             .flatMap { $0 }
         
@@ -57,6 +52,7 @@ final class Analyzer {
             CWE: \(issue.info.cwe)
             Sample: \(issue.sample ?? "")
             Recommendation: \(issue.info.recommendation)
+            File: \(file.path)
             -------------------------------------
             """
             print(log)
