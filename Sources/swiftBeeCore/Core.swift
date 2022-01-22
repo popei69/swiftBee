@@ -32,6 +32,7 @@ public final class CommandLineTool {
             let folder = try Folder(path: path) 
             scanFolder(folder)
                 .map(analyseFiles)
+                .map({ self.publishReport($0, destination: folder) })
             
         } catch {
             throw Error.unknownFolderPath
@@ -46,15 +47,30 @@ public final class CommandLineTool {
         return scanner.scan(folder)
     }
     
-    func analyseFiles(_ files: [File]) {
+    func analyseFiles(_ files: [File]) -> [Issue] {
         let analyser = Analyser()
+
+        var result: [Issue] = []
         
         for file in files {
             do {
-                try analyser.analyze(file)
+                let tmp = try analyser.analyse(file)
+                result.append(contentsOf: tmp)
             } catch {
                 print(error)
             }
+        }
+
+        return result
+    }
+
+    func publishReport(_ issues: [Issue], destination: Folder) {
+        let reporter = Reporter(folderDestination: destination, fileName: "report.json")
+        let report = reporter.generateReport(with: issues)
+        do {
+            try reporter.publishReport(report)
+        } catch {
+            print(error)
         }
     }
 

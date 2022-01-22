@@ -26,10 +26,10 @@ final class Analyser {
             .filter { $0.supportedExtensions.isEmpty || $0.supportedExtensions.contains(fileExtension) }
     }
     
-    func analyze(_ file: File) throws {
+    func analyse(_ file: File) throws -> [Issue] {
         let providerHandlers = providerHandlers(for: file)
         guard !providerHandlers.isEmpty else {
-            return
+            return []
         }
         
         print("Analyzing : " + file.path)
@@ -42,21 +42,23 @@ final class Analyser {
                 self.evaluate(content, rule: rule)
             }
             .flatMap { $0 }
+
+        return issues
         
-        for issue in issues {
-            let log = """
-            -------------------------------------
-            Issue found ⚠️
-            ID: \(issue.vulnerabilityId)
-            CSVV: \(issue.info.CSVSS)
-            CWE: \(issue.info.cwe)
-            Sample: \(issue.sample ?? "")
-            Recommendation: \(issue.info.recommendation)
-            File: \(file.path)
-            -------------------------------------
-            """
-            print(log)
-        }
+//        for issue in issues {
+//            let log = """
+//            -------------------------------------
+//            Issue found ⚠️
+//            ID: \(issue.vulnerabilityId)
+//            CSVV: \(issue.info.CSVSS)
+//            CWE: \(issue.info.cwe)
+//            Sample: \(issue.sample ?? "")
+//            Recommendation: \(issue.info.recommendation)
+//            File: \(file.path)
+//            -------------------------------------
+//            """
+//            print(log)
+//        }
     }
     
     func evaluate(_ content: String, rule: Rule) -> [Issue]? {

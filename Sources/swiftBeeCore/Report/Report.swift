@@ -7,14 +7,30 @@
 
 import Foundation
 
-struct Report {
+struct Report: Codable {
     let averageCSVSS: Float
     let securityScore: Float
 
     // vulnerability counts
-    let lowCount: Int
-    let mediumCount: Int
-    let highCount: Int
-    let criticalCount: Int
-    let totalCount: Int
+    var lowCount: Int
+    var mediumCount: Int
+    var highCount: Int
+    var criticalCount: Int
+    var totalCount: Int
+
+    var issues: [Issue]
+}
+
+extension Report {
+
+    init(averageCSVSS: Float, securityScore: Float) {
+        self.init(averageCSVSS: averageCSVSS,
+                  securityScore: securityScore,
+                  lowCount: 0,
+                  mediumCount: 0,
+                  highCount: 0,
+                  criticalCount: 0,
+                  totalCount: 0,
+                  issues: [])
+    }
 }

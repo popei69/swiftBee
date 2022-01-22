@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Issue {
+struct Issue: Codable {
     let vulnerabilityId: UUID
     let info: IssueInfo
     let line: Int?
@@ -16,7 +16,7 @@ struct Issue {
     let content: String?
 }
 
-struct IssueInfo {
+struct IssueInfo: Codable {
     let description: String
     let cwe: String
     let CSVSS: Float
