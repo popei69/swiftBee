@@ -1,7 +1,7 @@
 import swiftBeeCore
 
 
-let tool = CommandLineTool(arguments: ["./", "~/development/swift/sardine-fomo"])
+let tool = CommandLineTool()
 
 do {
     try tool.run()
