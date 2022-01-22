@@ -31,7 +31,7 @@ public final class CommandLineTool {
         do {
             let folder = try Folder(path: path) 
             scanFolder(folder)
-                .map(analyseFiles)
+                .map({ self.analyseFiles($0, from: folder) })
                 .map({ self.publishReport($0, destination: folder) })
             
         } catch {
@@ -47,10 +47,10 @@ public final class CommandLineTool {
         return scanner.scan(folder)
     }
     
-    func analyseFiles(_ files: [File]) -> [Issue] {
-        let analyser = Analyser()
+    func analyseFiles(_ files: [File], from targetFolder: Folder) -> [Vulnerability] {
+        let analyser = Analyser(targetFolder: targetFolder)
 
-        var result: [Issue] = []
+        var result: [Vulnerability] = []
         
         for file in files {
             do {
@@ -64,9 +64,9 @@ public final class CommandLineTool {
         return result
     }
 
-    func publishReport(_ issues: [Issue], destination: Folder) {
+    func publishReport(_ vulnerabilities: [Vulnerability], destination: Folder) {
         let reporter = Reporter(folderDestination: destination, fileName: "report.json")
-        let report = reporter.generateReport(with: issues)
+        let report = reporter.generateReport(with: vulnerabilities)
         do {
             try reporter.publishReport(report)
         } catch {

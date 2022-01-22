@@ -18,23 +18,23 @@ final class Reporter {
         self.fileName = fileName
     }
 
-    func generateReport(with issues: [Issue]) -> Report {
+    func generateReport(with vulnerabilities: [Vulnerability]) -> Report {
 
         var averageCSVSS: Float = 0
 
-        var noneCount = 0
+        var unknownCount = 0
         var lowCount = 0
         var mediumCount = 0
         var highCount = 0
         var criticalCount = 0
 
-        for issue in issues {
-            let issueCSVSS = issue.info.CSVSS
+        for vulnerability in vulnerabilities {
+            let issueCSVSS = vulnerability.issue.info.CSVSS
             averageCSVSS = max(averageCSVSS, issueCSVSS)
 
             switch issueCSVSS {
             case 0:
-                noneCount += 1
+                unknownCount += 1
             case 0..<4:
                 lowCount += 1
             case 4..<7:
@@ -52,12 +52,13 @@ final class Reporter {
         let report = Report(
             averageCSVSS: averageCSVSS,
             securityScore: securityScore,
+            unknownCount: unknownCount,
             lowCount: lowCount,
             mediumCount: mediumCount,
             highCount: highCount,
             criticalCount: criticalCount,
-            totalCount: issues.count,
-            issues: issues
+            totalCount: vulnerabilities.count,
+            vulnerabilities: vulnerabilities
         )
 
         return report

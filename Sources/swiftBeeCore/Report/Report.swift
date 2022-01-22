@@ -12,13 +12,14 @@ struct Report: Codable {
     let securityScore: Float
 
     // vulnerability counts
+    var unknownCount: Int
     var lowCount: Int
     var mediumCount: Int
     var highCount: Int
     var criticalCount: Int
     var totalCount: Int
 
-    var issues: [Issue]
+    var vulnerabilities: [Vulnerability]
 }
 
 extension Report {
@@ -26,11 +27,12 @@ extension Report {
     init(averageCSVSS: Float, securityScore: Float) {
         self.init(averageCSVSS: averageCSVSS,
                   securityScore: securityScore,
+                  unknownCount: 0,
                   lowCount: 0,
                   mediumCount: 0,
                   highCount: 0,
                   criticalCount: 0,
                   totalCount: 0,
-                  issues: [])
+                  vulnerabilities: [])
     }
 }

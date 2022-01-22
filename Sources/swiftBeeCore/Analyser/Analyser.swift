@@ -12,9 +12,12 @@ import Files
 final class Analyser {
     
     let providers: [RuleProviderProtocol]
+    let targetFolder: Folder
     
-    init(providers: [RuleProviderProtocol] = [BasicRuleProvider(), iOSRuleProvider()]) {
+    init(providers: [RuleProviderProtocol] = [BasicRuleProvider(), iOSRuleProvider()],
+         targetFolder: Folder) {
         self.providers = providers
+        self.targetFolder = targetFolder
     }
     
     func providerHandlers(for file: File) -> [RuleProviderProtocol] {
@@ -26,24 +29,27 @@ final class Analyser {
             .filter { $0.supportedExtensions.isEmpty || $0.supportedExtensions.contains(fileExtension) }
     }
     
-    func analyse(_ file: File) throws -> [Issue] {
+    func analyse(_ file: File) throws -> [Vulnerability] {
         let providerHandlers = providerHandlers(for: file)
         guard !providerHandlers.isEmpty else {
             return []
         }
-        
-        print("Analyzing : " + file.path)
+
+        let relativePath = file.path(relativeTo: targetFolder)
+        print("Analyzing : " + relativePath)
         let content = try file.readAsString()
         
-        let issues = providerHandlers
+        let vulnerabilities = providerHandlers
             .map { $0.rules }
             .flatMap { $0 }
             .compactMap { rule in
                 self.evaluate(content, rule: rule)
             }
             .flatMap { $0 }
+            .compactMap { Vulnerability(filePath: relativePath, issue: $0)
+            }
 
-        return issues
+        return vulnerabilities
         
 //        for issue in issues {
 //            let log = """
