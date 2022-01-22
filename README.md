@@ -2,7 +2,7 @@
 
 Welcome to `swiftBee`🐝, a static code analyser to detect vulnerabilities and security issues in your iOS codebase but not only. It's focused on covering OWASP Top 10 security risks.
 
-_The development is at an exploratory phase yo see how relevant and useful it can be to other developers, keeping your favorite app safer._
+_The development is at an exploratory phase to see how relevant and useful it can be to other developers, keeping your favorite app safer. It's not yet at a stable stage to use and integrate, more like a playground to play with._
 
 ## How to use
 
