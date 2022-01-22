@@ -47,7 +47,7 @@ public final class CommandLineTool {
     }
     
     func analyseFiles(_ files: [File]) {
-        let analyser = Analyzer()
+        let analyser = Analyser()
         
         for file in files {
             do {

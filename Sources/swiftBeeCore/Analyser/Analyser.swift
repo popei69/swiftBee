@@ -9,7 +9,7 @@ import Foundation
 import Files
 
 
-final class Analyzer {
+final class Analyser {
     
     let providers: [RuleProviderProtocol]
     
@@ -199,7 +199,7 @@ final class Analyzer {
     }
 }
 
-extension Analyzer {
+extension Analyser {
     
     private func evaluateRegex(_ regexExp: String, into content: String, from rule: Rule) -> [Issue]? {
         guard let result = findAll(regexExp, into: content),
