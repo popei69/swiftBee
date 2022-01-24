@@ -11,15 +11,19 @@ let package = Package(
         .package(
             url: "https://github.com/johnsundell/files.git",
             from: "4.2.0"
-        )
+        ),
+        .package(
+            url: "https://github.com/apple/swift-argument-parser",
+            from: "1.0.0"
+        ),
     ],
     targets: [
         .executableTarget(
             name: "swiftBee",
-            dependencies: ["swiftBeeCore"]),
-        .target(
-            name: "swiftBeeCore",
-            dependencies: [.product(name: "Files", package: "files")]),
+            dependencies: [
+                .product(name: "Files", package: "files"),
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            ]),
         .testTarget(
             name: "swiftBeeTests",
             dependencies: ["swiftBee"]),

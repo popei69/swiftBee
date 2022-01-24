@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ArgumentParser
 import Files
 
 enum Error: Swift.Error {
@@ -14,20 +15,21 @@ enum Error: Swift.Error {
     case failedToCreateFile
 }
 
-public final class CommandLineTool {
-    private let arguments: [String]
+@main
+struct SwiftBee: ParsableCommand {
 
-    public init(arguments: [String] = CommandLine.arguments) { 
-        self.arguments = arguments
-    }
+    @Flag(help: "Ignore CocoaPods dependencies")
+    var ignorePods = false
 
-    public func run() throws {
+    @Argument(help: "Folder path to scan")
+    var path: String
+
+    mutating func run() throws {
         let start = Date()
-        guard arguments.count > 1 else {
+        guard !path.isEmpty else {
             throw Error.missingFolderPath
         }
-        
-        let path = arguments[1]
+
         do {
             let folder = try Folder(path: path) 
             scanFolder(folder)
@@ -43,7 +45,7 @@ public final class CommandLineTool {
     }
     
     func scanFolder(_ folder: Folder) -> [File]? {
-        let scanner = Scanner()
+        let scanner = Scanner(ignorePods: ignorePods)
         return scanner.scan(folder)
     }
     
