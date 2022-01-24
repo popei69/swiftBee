@@ -7,11 +7,15 @@
 
 import Files
 
-final class Scanner {
-    
+struct Scanner {
+
+    let ignorePods: Bool
     var exclusionFiles = [".gitignore"] 
     
     func scan(_ folder: Folder) -> [File] {
+        guard canScan(folder) else {
+            return []
+        }
         
         var files = folder.files
             .filter { !exclusionFiles.contains($0.name) }
@@ -21,5 +25,15 @@ final class Scanner {
         }
         
         return files
+    }
+}
+
+extension Scanner {
+    private func canScan(_ folder: Folder) -> Bool {
+        if folder.name == "Pods" {
+            return !ignorePods
+        }
+
+        return true
     }
 }

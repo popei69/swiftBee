@@ -16,7 +16,7 @@ enum Error: Swift.Error {
 }
 
 @main
-struct CommandLineTool: ParsableCommand {
+struct SwiftBee: ParsableCommand {
 
     @Flag(help: "Ignore CocoaPods dependencies")
     var ignorePods = false
@@ -45,7 +45,7 @@ struct CommandLineTool: ParsableCommand {
     }
     
     func scanFolder(_ folder: Folder) -> [File]? {
-        let scanner = Scanner()
+        let scanner = Scanner(ignorePods: ignorePods)
         return scanner.scan(folder)
     }
     
